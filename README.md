@@ -7,7 +7,10 @@ Please see our [2019 UC Davis URC poster](https://drive.google.com/file/d/1n7ccB
 
 how to get predicted effectors from an oomycete, secreted fasta file:
 
-1) make sure python 3 is downloaded 
+1) make sure python3 is downloaded 
+  ```bash
+  python3 --version
+  ```
 2) make sure all packages are downloaded
   ```bash
   pip3 install --user -r requirements.txt
