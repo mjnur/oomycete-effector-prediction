@@ -1,0 +1,13 @@
+INRA- plasmopara_viticola_INRA-PV221.translated_proteins.PBv1.fasta
+Plas_vit- Plas_vit.protein.fasta
+Plas_hal- Plas_hal.protein.fasta
+Per_tab- Per_tab-T1.protein.fasta
+Per_eff- Per_eff-R13.protein.fasta
+Hya_arab- Hya_arab.protein.fasta
+Psu_cub- Psu_cub.protein.fasta
+Phy_par- Phy_par.protein.fasta
+Phy_inf- Phy_inf.protein.fasta
+Phy_cap- Phy_cap.protein.fasta
+Phy_cin- Phy_cin.protein.fasta
+Phy_ram- Phy_ram.protein.fasta
+Phy_soj- Phy_soj.protein.fasta
