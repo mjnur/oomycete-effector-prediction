@@ -17,7 +17,7 @@ Please see our [2019 UC Davis URC poster](https://drive.google.com/file/d/1n7ccB
   ```bash
   pip3 install --user -r requirements.txt
   ```
-3) cd into scripts directory
+3) cd into machine_learning_classification/scripts directory
 4) run this on command line:
 
 ```python
