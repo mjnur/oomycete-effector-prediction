@@ -1,4 +1,4 @@
-## oomycete-effector-prediction
+## oomycete-effector-prediction (work in progress)
 
 ### Predicting oomycete effector genes using lineage-specificity and machine learning classifiers
 
