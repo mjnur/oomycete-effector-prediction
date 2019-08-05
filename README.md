@@ -5,8 +5,9 @@
 Please see our [2019 UC Davis URC poster](https://drive.google.com/file/d/1n7ccBZi6c5K6h600u0lF9xnMRiMtKWVa/view?usp=sharing) for a high-level description of this research.
 
 
-how to get predicted effectors from an oomycete, secreted fasta file:
-(using Random Forest classifier and 6 amino acid features):
+how to get predicted effectors from an oomycete, secreted fasta file
+
+(using pre-trained Random Forest oomycete effector classifcation model):
 
 1) make sure python3 is downloaded 
   ```bash
