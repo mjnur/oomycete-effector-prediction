@@ -7,7 +7,7 @@ Please see our [2019 UC Davis URC poster](https://drive.google.com/file/d/1n7ccB
 
 ### How to get predicted effectors from an oomycete secreted fasta file:
 
-##### (using pre-trained Random Forest oomycete effector classifcation model):
+#### (using pre-trained Random Forest oomycete effector classifcation model):
 
 1) make sure python3 is downloaded 
   ```bash
