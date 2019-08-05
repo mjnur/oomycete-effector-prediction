@@ -7,7 +7,7 @@ If you have any questions or trouble running this, please email me at **mjnur@uc
 Please see our [2019 UC Davis URC poster](https://drive.google.com/file/d/1n7ccBZi6c5K6h600u0lF9xnMRiMtKWVa/view?usp=sharing) for a high-level description of this research.
 
 
-### How to get predicted effectors from an oomycete secreted fasta file:
+### How to get predicted effectors from an oomycete fasta file (works best on secreted proteins):
 
 #### (using pre-trained Random Forest oomycete effector classifcation model):
 
