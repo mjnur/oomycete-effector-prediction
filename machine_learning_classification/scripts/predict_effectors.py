@@ -12,7 +12,7 @@ from Bio import SeqIO
 ##    2) (optional) model file path (will default to best Random Forest)
 
 ## RUN LIKE THIS:
-##    python3.6 predict_effectors.py secreted_B_lac_proteins.fasta
+##    python3.6 predict_effectors.py {INPUT_FASTA_PATH}
 
 ## output:
 ##    1) csv of IDs|class_prediction|meaning|probability_of_prediction
