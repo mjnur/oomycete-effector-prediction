@@ -7,7 +7,7 @@ Please see our [2019 UC Davis URC poster](https://drive.google.com/file/d/1n7ccB
 
 how to get predicted effectors from an oomycete, secreted fasta file:
 
-1) make sure python3.6 is downloaded and running 
+1) make sure python3.6 is downloaded 
 2) make sure all packages are downloaded
 3) git clone this repository, cd into scripts directory
 4) run this on command line:
