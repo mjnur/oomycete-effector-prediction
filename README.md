@@ -13,7 +13,7 @@ Please see our [2019 UC Davis URC poster](https://drive.google.com/file/d/1n7ccB
   ```bash
   python3 --version
   ```
-2) git clone this repository and make sure all packages are downloaded
+2) git clone this repository, then make sure all packages are downloaded
   ```bash
   pip3 install --user -r requirements.txt
   ```
