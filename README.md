@@ -13,11 +13,11 @@ Please see our [2019 UC Davis URC poster](https://drive.google.com/file/d/1n7ccB
   ```bash
   python3 --version
   ```
-2) make sure all packages are downloaded
+2) git clone this repository and make sure all packages are downloaded
   ```bash
   pip3 install --user -r requirements.txt
   ```
-3) git clone this repository, cd into scripts directory
+3) cd into scripts directory
 4) run this on command line:
 
 ```python
