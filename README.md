@@ -1,6 +1,6 @@
 ## EffectorO
 
-If you have any questions or trouble running this, please email me at **mjnur@ucdavis.edu**
+If you have any questions or trouble running this, please email authors at **mjnur@ucdavis.edu** or **kjwood@ucdavis.edu**
 
 ### Predicting oomycete effector genes using lineage-specificity and machine learning classifiers
 
