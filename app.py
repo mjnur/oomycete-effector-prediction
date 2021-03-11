@@ -29,7 +29,7 @@ def generate_table(dataframe, max_rows=10):
     )
 
 app.layout = html.Div([
-    html.H2('EffectortO: Predicting Oomycete Effector Genes using Machine Learning Classifiers'),
+    html.H2('EffectorO: Predicting Oomycete Effector Genes using Machine Learning Classifiers'),
     html.P('This is a demonstration of how to use dash/plotly to deploy an interactive web app!'),
     dcc.Graph(
         id = "plot1",
