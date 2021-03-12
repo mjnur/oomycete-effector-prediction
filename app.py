@@ -140,23 +140,54 @@ header = dbc.Navbar(
 
 image_card = dbc.Card(
     [
-        dbc.CardHeader(html.H2("Input FASTA protein file")),
+        dbc.CardHeader(html.H3("Input FASTA protein file for EffectorO-ML")),
         dbc.CardBody(
             dbc.Row([
                 dbc.Col([
-                    dcc.Upload(html.Button('Upload Fasta File'))
+                    # create upload button, with max file size of 10MB
+                    dcc.Upload(html.Button('Select a fasta file', 
+                                           style={"width": "100%",
+                                                  'borderStyle': 'dashed',
+                                                  'font-family': 'sans-serif',
+                                                  'borderRadius': '5px',
+                                                  'borderWidth': '2px',}), 
+                               max_size=10000000,
+                               style={"width": "100%"})
+
                 ], width=12, style={"padding-left": 0}),
                 html.Div([
-                    html.P("Input FASTA protein file\n"),
-                    html.Br(),
+                    dcc.Markdown('''**File requirements**:''', style={'padding-top': '10px'}),
+                    dcc.Markdown('''
+                      - FASTA-formatted file of amino acid sequences
+                      - File size less than 10MB
+                    ''')
                 ]),
             ]),
         ),
-    ]
+    ], style={'height': '30vh'}
+)
+
+methodology_card = dbc.Card(
+    [
+        dbc.CardHeader(html.H3("Methodology")),
+        dbc.CardBody(
+            dbc.Row([
+                html.Div([
+                    dcc.Markdown('''See [bioRxiv pre-print](https://www.biorxiv.org) for detailed information'''),
+                    dcc.Markdown('''This pipeline runs **EffectorO-ML**, a pre-trained 
+                    machine-learning based Oomycete effector classifier, built from Random Forest models and using
+                    biochemical amino acid characteristics as features.''')
+
+
+                ]),
+            ]),
+        ),
+    ], style={'height': '30vh'}
+
 )
 table_card = dbc.Card(
     [
-        dbc.CardHeader(html.H2("Effector Prediction Table")),
+        dbc.CardHeader(html.H2("EffectorO-ML Prediction Table")),
         dbc.CardBody(
             dbc.Row(
                 dbc.Col(
@@ -182,7 +213,10 @@ table_card = dbc.Card(
                             selected_columns=initial_columns,
                             style_table={"overflowY": "scroll"},
                             fixed_rows={"headers": False, "data": 0},
-                            style_cell={"width": "85px", "font-size": "16px"},
+                            style_cell={"width": "85px", 
+                                        "font-size": "16px",
+                                        'fontFamily': 'Sans-Serif'
+                                       },
                         ),
                         html.Div(id="row", hidden=True, children=None),
                     ]
@@ -196,7 +230,10 @@ app.layout = html.Div(
     [
         header,
         dbc.Container(
-            [dbc.Row([dbc.Col(image_card, md=5), dbc.Col(table_card, md=7)])],
+            [dbc.Row([dbc.Col(image_card, md=6), 
+                      dbc.Col(methodology_card, md=6)
+                      ], ),
+            dbc.Row([dbc.Col(table_card)])],
             fluid=True,
         ),
     ]
