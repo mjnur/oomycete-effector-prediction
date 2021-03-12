@@ -16,7 +16,7 @@ import matplotlib as mpl
 
 # Set up the app
 external_stylesheets = [dbc.themes.BOOTSTRAP, "assets/object_properties_style.css"]
-app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
+app = dash.Dash(__name__, external_stylesheets=external_stylesheets, suppress_callback_exceptions=True)
 server = app.server
 
 # Read the image that will be segmented
@@ -280,24 +280,6 @@ image_card = dbc.Card(
                         "Use the dropdown menu to select which variable to base the colorscale on:"
                     ),
                     dbc.Col(color_drop),
-                    dbc.Toast(
-                        [
-                            html.P(
-                                "In order to use all functions of this app, please select a variable "
-                                "to compute the colorscale on.",
-                                className="mb-0",
-                            )
-                        ],
-                        id="auto-toast",
-                        header="No colorscale value selected",
-                        icon="danger",
-                        style={
-                            "position": "fixed",
-                            "top": 66,
-                            "left": 10,
-                            "width": 350,
-                        },
-                    ),
                 ],
                 align="center",
             ),
@@ -376,7 +358,7 @@ def higlight_row(string):
     [
         Output("graph", "figure"),
         Output("row", "children"),
-        Output("auto-toast", "is_open"),
+
     ],
     [
         Input("table-line", "derived_virtual_indices"),
@@ -425,9 +407,9 @@ def highlight_filter(
             hoverinfo="skip",
             opacity=0.9,
         )
-        return [fig, cell_index["row"], False]
+        return [fig, cell_index["row"]]
 
-    return [fig, previous_row, False]
+    return [fig, previous_row]
 
 
 @app.callback(
