@@ -100,7 +100,7 @@ def parse_contents(contents, filename):
                           })
         
         # round probabilities
-        df['probability'] = np.round(df['probability'], 2)
+        df['probability'] = np.round(df['probability'], 3)
 
     except Exception as e:
         df = pd.DataFrame({"proteinID": [],
