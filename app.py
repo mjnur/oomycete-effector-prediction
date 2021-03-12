@@ -133,6 +133,7 @@ def get_new_datatable(contents, filename):
                 "font-size": "16px"
             },
             tooltip_delay=0,
+            page_size=18,
             export_format="csv",
             sort_action='native',
             tooltip_duration=None,
