@@ -142,10 +142,15 @@ image_card = dbc.Card(
     [
         dbc.CardHeader(html.H2("Input FASTA protein file")),
         dbc.CardBody(
-            dbc.Row(
-                dbc.Col(
-                )
-            )
+            dbc.Row([
+                dbc.Col([
+                    dcc.Upload(html.Button('Upload Fasta File'))
+                ], width=12, style={"padding-left": 0}),
+                html.Div([
+                    html.P("Input FASTA protein file\n"),
+                    html.Br(),
+                ]),
+            ]),
         ),
     ]
 )
