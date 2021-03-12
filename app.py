@@ -72,11 +72,10 @@ def get_average_features(sequence, df=0, protID=0):
 
 # file upload function
 def parse_contents(contents, filename):
-    content_type, content_string = contents.split(',')
-
-    decoded = base64.b64decode(content_string)
     try:
-            
+        content_type, content_string = contents.split(',')
+        decoded = base64.b64decode(content_string)
+        
         trained_model = pickle.load(open('machine_learning_classification/trained_models/RF_88_best.sav', 'rb'))
         seqs_to_predict = SeqIO.parse(io.StringIO(decoded.decode('utf-8')),'fasta')
         prediction_map = {'0': "predicted non-effector", '1': "predicted effector"}
@@ -104,9 +103,11 @@ def parse_contents(contents, filename):
         df['probability'] = np.round(df['probability'], 2)
 
     except Exception as e:
-        print(e)
-        return None
-
+        df = pd.DataFrame({"proteinID": [],
+                   "prediction": [], 
+                   "probability": [], 
+                   "meaning": []
+                  })
     return df
 
 @app.callback(Output('datatable','children'),
