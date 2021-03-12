@@ -12,77 +12,141 @@ from skimage import io, filters, measure, color, img_as_ubyte
 import PIL
 import pandas as pd
 import matplotlib as mpl
+import pickle
+from Bio import SeqIO
+from machine_learning_classification.scripts import FEAT as FEAT
+from sklearn.ensemble import RandomForestClassifier
 
+
+import json
+import datetime
+import operator
+import os
+
+import base64
+import io
 
 # Set up the app
 external_stylesheets = [dbc.themes.BOOTSTRAP, "assets/object_properties_style.css"]
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets, suppress_callback_exceptions=True)
 server = app.server
 
-# Read the image that will be segmented
-filename = (
-    "https://upload.wikimedia.org/wikipedia/commons/a/ac/Monocyte_no_vacuoles.JPG"
-)
-img = io.imread(filename, as_gray=True)[:660:2, :800:2]
-label_array = measure.label(img < filters.threshold_otsu(img))
-current_labels = np.unique(label_array)[np.nonzero(np.unique(label_array))]
-# Compute and store properties of the labeled image
-prop_names = [
-    "label",
-    "area",
-    "perimeter",
-    "eccentricity",
-    "euler_number",
-    "mean_intensity",
-]
-prop_table = measure.regionprops_table(
-    label_array, intensity_image=img, properties=prop_names
-)
-table = pd.DataFrame(prop_table)
-# Format the Table columns
-columns = [
-    {"name": label_name, "id": label_name, "selectable": True}
-    if precision is None
-    else {
-        "name": label_name,
-        "id": label_name,
-        "type": "numeric",
-        "format": Format(precision=precision),
-        "selectable": True,
-    }
-    for label_name, precision in zip(prop_names, (None, None, 4, 4, None, 3))
-]
-# Select the columns that are selected when the app starts
-initial_columns = ["label", "area"]
+def get_average_features(sequence, df=0, protID=0):
+    '''
+    Method: Fills feature columns in df with net averages
+    Input: 
+        - df: dataframe
+        - protID: sequence identifier
+        - sequence: amino acid string
+    '''
+    res = []
+    gravy = hydrophobicity = exposed = disorder = bulkiness = interface = 0.0
+    
+    ## get NET cumulative sums
+    #print("calculating for", sequence)
+    length = min(len(sequence), 900)
+    
+    for ind,aa in enumerate(sequence):
+        if ind == length: 
+            break
+            
+        if aa.upper() in FEAT.INTERFACE_DIC:
+            gravy += FEAT.GRAVY_DIC[aa.upper()]
+            hydrophobicity += FEAT.HYDRO_DIC[aa.upper()]
+            exposed += FEAT.EXPOSED_DIC[aa.upper()]
+            disorder += FEAT.DISORDER_DIC[aa.upper()]
+            bulkiness += FEAT.BULKY_DIC[aa.upper()]
+            interface += FEAT.INTERFACE_DIC[aa.upper()]
 
-img = img_as_ubyte(color.gray2rgb(img))
-img = PIL.Image.fromarray(img)
-# Pad label-array with zero to get contours of regions on the edge
-label_array = np.pad(label_array, (1,), "constant", constant_values=(0,))
+    ## store averages in df_
+    res.append(gravy / length)
+    res.append(hydrophobicity / length)
+    res.append(exposed / length)
+    res.append(disorder / length)
+    res.append(bulkiness / length)
+    res.append(interface / length)
+    
+    return res
 
-# Define Modal
-with open("assets/modal.md", "r") as f:
-    howto_md = f.read()
 
-modal_overlay = dbc.Modal(
-    [
-        dbc.ModalBody(html.Div([dcc.Markdown(howto_md)], id="howto-md")),
-        dbc.ModalFooter(dbc.Button("Close", id="howto-close", className="howto-bn")),
-    ],
-    id="modal",
-    size="lg",
-)
+
+# file upload function
+def parse_contents(contents, filename):
+    content_type, content_string = contents.split(',')
+
+    decoded = base64.b64decode(content_string)
+    try:
+            
+        trained_model = pickle.load(open('machine_learning_classification/trained_models/RF_88_best.sav', 'rb'))
+        seqs_to_predict = SeqIO.parse(io.StringIO(decoded.decode('utf-8')),'fasta')
+        prediction_map = {'0': "predicted non-effector", '1': "predicted effector"}
+        
+        seq_ids = []
+        full_sequences = []
+        for protein in seqs_to_predict:
+            seq_ids.append(protein.id)
+            full_sequences.append(protein.seq)
+
+        seq_features = np.array([get_average_features(seq) for seq in full_sequences])
+        
+        # get predicted output
+        predictions = trained_model.predict(seq_features)
+        probabilities = trained_model.predict_proba(seq_features)
+        meanings = np.array([prediction_map[pred] for pred in predictions])
+    
+        df = pd.DataFrame({"proteinID": seq_ids,
+                           "prediction": predictions, 
+                           "probability": probabilities[:,1], 
+                           "meaning": meanings
+                          })
+        
+        # round probabilities
+        df['probability'] = np.round(df['probability'], 2)
+
+    except Exception as e:
+        print(e)
+        return None
+
+    return df
+
+@app.callback(Output('datatable','children'),
+              [Input('upload-data', 'contents'),
+               Input('upload-data', 'filename')])
+def get_new_datatable(contents, filename):
+    table = parse_contents(contents, filename)
+    table = table[['proteinID', 'prediction', 'probability', 'meaning']]
+    formatted_table = dash_table.DataTable(
+            columns=[{"name": i, "id": i} for i in table.columns],            
+            data=table.to_dict("records"),
+            tooltip_header={
+                'proteinID': 'Protein ID obtained from fasta file',
+                'prediction': 'Binary classification value of non-effector (0) and effector(1), \
+                                using a cutoff of 0.5',
+                'probability': 'Random Forest predicted probability of being an effector',
+                'meaning': 'Classification value in a readable format'
+            },
+            style_header={
+                "textDecoration": "underline",
+                "textDecorationStyle": "dotted",
+                'backgroundColor': 'white',
+                'fontWeight': 'bold',
+                "font-size": "16px"
+            },
+            tooltip_delay=0,
+            export_format="csv",
+            sort_action='native',
+            tooltip_duration=None,
+            style_table={"overflowY": "scroll"},
+            fixed_rows={"headers": False, "data": 0},
+            style_cell={"width": "85px", 
+                        "font-size": "16px",
+                        'fontFamily': 'Sans-Serif'
+                       },
+        )
+    
+    return html.Div([formatted_table])
 
 # Buttons
-button_gh = dbc.Button(
-    "Learn more",
-    id="howto-open",
-    outline=True,
-    color="secondary",
-    # Turn off lowercase transformation for class .button in stylesheet
-    style={"textTransform": "none"},
-)
-
 button_howto = dbc.Button(
     "View Code on github",
     outline=False,
@@ -104,11 +168,10 @@ header = dbc.Navbar(
                                 src=app.get_asset_url("genomecenter_logo.png"),
                                 height="30px",
                             ),
-                            href="https://plotly.com/dash/",
+                            href="https://bremia.ucdavis.edu",
                         )
                     ),
-                    dbc.Col(dbc.NavbarBrand("EffectorO: Oomycete Effector Prediction")),
-                    modal_overlay,
+                    dbc.Col(dbc.NavbarBrand("EffectorO: Motif-Independent Oomycete Effector Prediction")),
                 ],
                 align="center",
             ),
@@ -118,7 +181,7 @@ header = dbc.Navbar(
                         dbc.NavbarToggler(id="navbar-toggler"),
                         dbc.Collapse(
                             dbc.Nav(
-                                [dbc.NavItem(button_howto)],#, dbc.NavItem(button_gh)],
+                                [dbc.NavItem(button_howto)],
                                 className="ml-auto",
                                 navbar=True,
                             ),
@@ -151,6 +214,7 @@ image_card = dbc.Card(
                                                   'font-family': 'sans-serif',
                                                   'borderRadius': '5px',
                                                   'borderWidth': '2px',}), 
+                               id="upload-data",
                                max_size=10000000,
                                style={"width": "100%"})
 
@@ -175,7 +239,7 @@ methodology_card = dbc.Card(
                 html.Div([
                     dcc.Markdown('''See [bioRxiv pre-print](https://www.biorxiv.org) for detailed information'''),
                     dcc.Markdown('''This pipeline runs **EffectorO-ML**, a pre-trained 
-                    machine-learning based Oomycete effector classifier, built from Random Forest models and using
+                    machine-learning based Oomycete effector classifier, built from Random Forest models using
                     biochemical amino acid characteristics as features.''')
 
 
@@ -192,33 +256,7 @@ table_card = dbc.Card(
             dbc.Row(
                 dbc.Col(
                     [
-                        dash_table.DataTable(
-                            id="table-line",
-                            columns=columns,
-                            data=table.to_dict("records"),
-                            tooltip_header={
-                                col: "Select columns with the checkbox to include them in the hover info of the image."
-                                for col in table.columns
-                            },
-                            style_header={
-                                "textDecoration": "underline",
-                                "textDecorationStyle": "dotted",
-                                'backgroundColor': 'white',
-                                'fontWeight': 'bold',
-                                "font-size": "16px"
-                            },
-                            tooltip_delay=0,
-                            sort_action='native',
-                            tooltip_duration=None,
-                            selected_columns=initial_columns,
-                            style_table={"overflowY": "scroll"},
-                            fixed_rows={"headers": False, "data": 0},
-                            style_cell={"width": "85px", 
-                                        "font-size": "16px",
-                                        'fontFamily': 'Sans-Serif'
-                                       },
-                        ),
-                        html.Div(id="row", hidden=True, children=None),
+                        html.Div(id='datatable')
                     ]
                 )
             )
