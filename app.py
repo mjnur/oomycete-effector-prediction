@@ -137,6 +137,7 @@ def get_new_datatable(contents, filename):
             page_size=18,
             export_format="csv",
             sort_action='native',
+            filter_action='native',
             tooltip_duration=None,
             style_table={"overflowY": "scroll"},
             fixed_rows={"headers": False, "data": 0},
@@ -217,15 +218,14 @@ image_card = dbc.Card(
                                                   'borderRadius': '5px',
                                                   'borderWidth': '2px',}), 
                                id="upload-data",
-                               max_size=10000000,
-                               style={"width": "100%"})
-
+                               max_size=20000000,
+                               style={"width": "100%"}),
                 ], width=12, style={"padding-left": 0}),
                 html.Div([
                     dcc.Markdown('''**File requirements**:''', style={'padding-top': '10px'}),
                     dcc.Markdown('''
-                      - FASTA-formatted file of amino acid sequences
-                      - File size less than 10MB
+                      - FASTA-formatted file of predicted amino acid sequences
+                      - File size less than 20MB
                     ''')
                 ]),
             ]),
@@ -239,12 +239,10 @@ methodology_card = dbc.Card(
         dbc.CardBody(
             dbc.Row([
                 html.Div([
-                    dcc.Markdown('''See [bioRxiv pre-print](https://www.biorxiv.org) for detailed information'''),
+                    dcc.Markdown('''See [bioRxiv pre-print](https://www.biorxiv.org) for detailed information.'''),
                     dcc.Markdown('''This pipeline runs **EffectorO-ML**, a pre-trained 
                     machine-learning based Oomycete effector classifier, built from Random Forest models using
-                    biochemical amino acid characteristics as features.''')
-
-
+                    biochemical amino acid characteristics as features.'''),
                 ]),
             ]),
         ),
@@ -255,6 +253,7 @@ table_card = dbc.Card(
     [
         dbc.CardHeader(html.H2("EffectorO-ML Prediction Table")),
         dbc.CardBody(
+
             dbc.Row(
                 dbc.Col(
                     [
@@ -266,13 +265,59 @@ table_card = dbc.Card(
     ]
 )
 
+tab_label_style={"font-size": "1.3rem",
+                 }
+
+card = dbc.Card(
+    [
+        dbc.CardHeader(
+            dbc.Tabs(
+                [
+                    dbc.Tab(label="Launch Instructions", tab_id="launch-tab", 
+                            label_style=tab_label_style),
+                    dbc.Tab(label="Methodology", tab_id="method-tab", 
+                            label_style=tab_label_style),
+                ],
+                id="card-tabs",
+                card=True,
+                active_tab="launch-tab",
+            )
+        ),
+        dbc.CardBody(html.P(id="card-content", className="card-text")),
+    ], style={'height': '30vh'}
+)
+
+
+@app.callback(
+    Output("card-content", "children"), [Input("card-tabs", "active_tab")]
+)
+def tab_content(active_tab):
+    if active_tab == "method-tab":
+        return(
+            html.Div([
+                dcc.Markdown('''See [bioRxiv pre-print](https://www.biorxiv.org) for detailed information.'''),
+                dcc.Markdown('''This pipeline runs **EffectorO-ML**, a pre-trained 
+                machine-learning based Oomycete effector classifier, built from Random Forest models using
+                biochemical amino acid characteristics as features.'''),
+            ])
+        )
+    else:
+        return(
+            html.Div([
+                dcc.Markdown('''1. Click on the "**SELECT A FASTA FILE**" upload box.'''),
+                dcc.Markdown('''2. Upload a FASTA file of predicted amino acid sequences, for EffectorO-ML to analyze.'''),
+                dcc.Markdown('''3. View the sortable and filterable results in the datatable below.'''),
+            ])
+        )    
+
+
 app.layout = html.Div(
     [
         header,
         dbc.Container(
             [dbc.Row([dbc.Col(image_card, md=6), 
-                      dbc.Col(methodology_card, md=6)
-                      ], ),
+                      dbc.Col(card, md=6)
+                      ]),
             dbc.Row([dbc.Col(table_card)])],
             fluid=True,
         ),
