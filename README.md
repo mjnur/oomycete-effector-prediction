@@ -14,7 +14,7 @@ Please see our [2019 UC Davis URC poster](https://drive.google.com/file/d/1n7ccB
 2) Upload the FASTA file of our choice, of predicted amino acid sequences
 3) See your results in the data table! Can sort each column by clicking the arrows, and can search for sequences by the ID
 
-#### Command Line: using pre-trained Random Forest oomycete effector classification model:
+#### Using the EffectorO-ML command-line tool:
 
 1) make sure python3 is downloaded
   ```bash
