@@ -115,16 +115,20 @@ def parse_contents(contents, filename):
                Input('upload-data', 'filename')])
 def get_new_datatable(contents, filename):
     table = parse_contents(contents, filename)
-    table = table[['proteinID', 'prediction', 'probability', 'meaning']]
+    table['Protein ID'] = table['proteinID']
+    table['Probability'] = table['probability']
+    table['Classification'] = table['prediction']
+    table['Prediction'] = table['meaning']
+    table = table[['Protein ID', 'Probability', 'Classification', 'Prediction']]
     formatted_table = dash_table.DataTable(
             columns=[{"name": i, "id": i} for i in table.columns],            
             data=table.to_dict("records"),
             tooltip_header={
-                'proteinID': 'Protein ID obtained from fasta file',
-                'prediction': 'Binary classification value of non-effector (0) and effector(1), \
+                'Protein ID': 'Protein ID obtained from fasta file',
+                'Classification': 'Binary classification value of non-effector (0) and effector(1), \
                                 using a cutoff of 0.5',
-                'probability': 'Random Forest predicted probability of being an effector',
-                'meaning': 'Classification value in a readable format'
+                'Probability': 'Random Forest predicted probability of being an effector',
+                'Prediction': 'Classification value in a readable format'
             },
             style_header={
                 "textDecoration": "underline",
