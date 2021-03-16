@@ -6,6 +6,9 @@ If you have any questions or trouble running this, please email authors at **mjn
 
 Please see our [2019 UC Davis URC poster](https://drive.google.com/file/d/1n7ccBZi6c5K6h600u0lF9xnMRiMtKWVa/view?usp=sharing) for a high-level description of this research.
 
+### Data used
+- For secretomes, EffectorO-ML hits, EffectorO-LSP hits, WY domain-containing proteins and RXLR-EER domain-containing proteins from the 28 genomes Oomycete genomes, see the **EffectorO_genome_Results** directory.
+- For the original ORF files used, see this google drive link: https://drive.google.com/drive/folders/1iFH0nOd__SOluOQa4eRSVNCE0kEhQLu-?usp=sharing
 
 ### How to get machine-learning predicted effectors from an oomycete fasta file (works best on secreted proteins):
 
