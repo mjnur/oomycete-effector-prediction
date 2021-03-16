@@ -54,7 +54,7 @@ effector classifier on: ", len(seq_features))
     
     print("\n**NOTES**: \n\n \
             Positive training dataset: ~100 experimentally validated oomycete avirulence effectors \n \
-            Negative training dataset: ~300 secreted orthologous oomycete genes \n\n\
+            Negative training dataset: ~100 secreted orthologous oomycete genes \n\n\
 **END OF NOTES**\n")
           
 
