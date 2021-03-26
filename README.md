@@ -4,7 +4,7 @@ If you have any questions or trouble running this, please email authors at **mjn
 
 ### Predicting oomycete effector genes using lineage-specificity and machine learning classifiers
 
-Please see our [EffectorO bioRxiv preprint](https://www.biorxiv.org/content/10.1101/2021.03.19.436227v1) for more details!
+Please see our [EffectorO bioRxiv preprint](https://www.biorxiv.org/content/10.1101/2021.03.19.436227v1) for more details! And see our [EffectorO-ML web server](https://effectoro.herokuapp.com) that is available.
 
 ### Data used
 - For secretomes, EffectorO-ML hits, EffectorO-LSP hits, WY domain-containing proteins and RXLR-EER domain-containing proteins from the 28 genomes Oomycete genomes, see the **EffectorO_genome_Results** directory.
