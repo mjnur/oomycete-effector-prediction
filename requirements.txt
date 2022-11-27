@@ -9,7 +9,7 @@ certifi==2019.6.16
 Click==7.0
 dash
 plotly
-dash-bootstrap-components>=0.10.7
+dash-bootstrap-components==0.10.7
 dash-canvas>=0.0.8
 dash-core-components>=1.1.2
 dash-html-components>=1.0.1
