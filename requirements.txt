@@ -5,7 +5,7 @@ scikit-learn==0.22.1
 Biopython>=1.73
 
 # dashboard
-certifi==2019.6.16
+certifi==2022.12.7
 Click==7.0
 dash
 plotly
