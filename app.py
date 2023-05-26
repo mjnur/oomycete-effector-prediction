@@ -237,22 +237,6 @@ image_card = dbc.Card(
     ], style={'height': '30vh'}
 )
 
-methodology_card = dbc.Card(
-    [
-        dbc.CardHeader(html.H3("Methodology")),
-        dbc.CardBody(
-            dbc.Row([
-                html.Div([
-                    dcc.Markdown('''See [published paper](https://apsjournals.apsnet.org/doi/10.1094/MPMI-11-22-0236-TA) for detailed information.'''),
-                    dcc.Markdown('''This pipeline runs **EffectorO-ML**, a pre-trained 
-                    machine-learning based Oomycete effector classifier, built from Random Forest models using
-                    biochemical amino acid characteristics as features.'''),
-                ]),
-            ]),
-        ),
-    ], style={'height': '30vh'}
-
-)
 table_card = dbc.Card(
     [
         dbc.CardHeader(html.H2("EffectorO-ML Prediction Table")),
@@ -299,7 +283,7 @@ def tab_content(active_tab):
     if active_tab == "method-tab":
         return(
             html.Div([
-                dcc.Markdown('''See [bioRxiv pre-print](https://www.biorxiv.org) for detailed information.'''),
+                dcc.Markdown('''SSee [published paper](https://apsjournals.apsnet.org/doi/10.1094/MPMI-11-22-0236-TA) for detailed information.'''),
                 dcc.Markdown('''This pipeline runs **EffectorO-ML**, a pre-trained 
                 machine-learning based Oomycete effector classifier, built from Random Forest models using
                 biochemical amino acid characteristics as features.'''),
