@@ -155,7 +155,7 @@ def get_new_datatable(contents, filename):
 
 # Buttons
 button_howto = dbc.Button(
-    "View Code on github",
+    "View code on GitHub",
     outline=False,
     color="primary",
     href="https://github.com/mjnur/oomycete-effector-prediction",
@@ -243,7 +243,7 @@ methodology_card = dbc.Card(
         dbc.CardBody(
             dbc.Row([
                 html.Div([
-                    dcc.Markdown('''See [bioRxiv pre-print](https://www.biorxiv.org) for detailed information.'''),
+                    dcc.Markdown('''See [published paper](https://apsjournals.apsnet.org/doi/10.1094/MPMI-11-22-0236-TA) for detailed information.'''),
                     dcc.Markdown('''This pipeline runs **EffectorO-ML**, a pre-trained 
                     machine-learning based Oomycete effector classifier, built from Random Forest models using
                     biochemical amino acid characteristics as features.'''),
