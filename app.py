@@ -310,7 +310,7 @@ def tab_content(active_tab):
                 '''),
                 dcc.Markdown(
                     '''Also — if you are using EffectorO to predict oomycete effectors we would love to hear from you!'''
-                    ''' Please email Kelsey at klsywd@gmail.com'''
+                    ''' Please email Kelsey at [klsywd@gmail.com](mailto:klsywd@gmail.com)'''
                     ''' or on Twitter [@klsywd](https://twitter.com/klsywd) and let us know what organism you are studying.'''
                 ),
             ])
