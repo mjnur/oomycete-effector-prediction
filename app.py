@@ -303,7 +303,11 @@ def tab_content(active_tab):
         return(
             html.Div([
                 dcc.Markdown('''If you use EffectorO in your research, please cite us:'''),
-                dcc.Markdown('''> Nur, M. J., Wood, K. J. & Michelmore, R. W. EffectorO: motif-independent prediction of effectors in oomycete genomes using machine learning and lineage-specificity. Mol. Plant-Microbe Interact. (2023). doi:10.1094/MPMI-11-22-0236-TA'''),
+                dcc.Markdown('''
+                    > 
+                    > Nur, M. J., Wood, K. J. & Michelmore, R. W. EffectorO: motif-independent prediction of effectors in oomycete genomes using machine learning and lineage-specificity. Mol. Plant-Microbe Interact. (2023). doi:10.1094/MPMI-11-22-0236-TA
+                    > 
+                '''),
                 dcc.Markdown(
                     '''Also — if you are using EffectorO to predict oomycete effectors we would love to hear from you!'''
                     ''' Please email Kelsey at [klsywd@gmail.com](klsywd@gmail.com)'''
