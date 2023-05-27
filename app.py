@@ -265,6 +265,8 @@ card = dbc.Card(
                             label_style=tab_label_style),
                     dbc.Tab(label="Methodology", tab_id="method-tab", 
                             label_style=tab_label_style),
+                    dbc.Tab(label="Usage", tab_id="usage-tab", 
+                            label_style=tab_label_style),
                 ],
                 id="card-tabs",
                 card=True,
@@ -283,20 +285,32 @@ def tab_content(active_tab):
     if active_tab == "method-tab":
         return(
             html.Div([
-                dcc.Markdown('''SSee [published paper](https://apsjournals.apsnet.org/doi/10.1094/MPMI-11-22-0236-TA) for detailed information.'''),
+                dcc.Markdown('''See [published paper](https://apsjournals.apsnet.org/doi/10.1094/MPMI-11-22-0236-TA) for detailed information.'''),
                 dcc.Markdown('''This pipeline runs **EffectorO-ML**, a pre-trained 
                 machine-learning based Oomycete effector classifier, built from Random Forest models using
                 biochemical amino acid characteristics as features.'''),
             ])
         )
-    else:
+    elif active_tab == "launch-tab":
         return(
             html.Div([
                 dcc.Markdown('''1. Click on the "**SELECT A FASTA FILE**" upload box.'''),
                 dcc.Markdown('''2. Upload a FASTA file of predicted amino acid sequences, for EffectorO-ML to analyze.'''),
                 dcc.Markdown('''3. View the sortable and filterable results in the datatable below.'''),
             ])
-        )    
+        )
+    elif active_tab == "usage-tab":
+        return(
+            html.Div([
+                dcc.Markdown('''If you use EffectorO in your research, please cite us:'''),
+                dcc.Markdown('''> Nur, M. J., Wood, K. J. & Michelmore, R. W. EffectorO: motif-independent prediction of effectors in oomycete genomes using machine learning and lineage-specificity. Mol. Plant-Microbe Interact. (2023). doi:10.1094/MPMI-11-22-0236-TA'''),
+                dcc.Markdown(
+                    '''Also — if you are using EffectorO to predict oomycete effectors we would love to hear from you!'''
+                    ''' Please email Kelsey at [klsywd@gmail.com](klsywd@gmail.com)'''
+                    ''' or on Twitter [@klsywd](https://twitter.com/klsywd) and let us know what organism you are studying.'''
+                ),
+            ])
+        )
 
 
 app.layout = html.Div(
