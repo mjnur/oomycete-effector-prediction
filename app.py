@@ -1,35 +1,33 @@
 import dash
 import dash_table
-from dash_table.Format import Format
 from dash.dependencies import Input, Output, State
 import dash_html_components as html
 import dash_core_components as dcc
 import dash_bootstrap_components as dbc
-import plotly.express as px
 
 import numpy as np
-from skimage import io, filters, measure, color, img_as_ubyte
-import PIL
 import pandas as pd
-import matplotlib as mpl
 import pickle
 from Bio import SeqIO
+import io
 from machine_learning_classification.scripts import FEAT as FEAT
-from sklearn.ensemble import RandomForestClassifier
 
 
-import json
-import datetime
-import operator
-import os
+import psutil
 
 import base64
-import io
 
 # Set up the app
 external_stylesheets = [dbc.themes.BOOTSTRAP, "assets/object_properties_style.css"]
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets, suppress_callback_exceptions=True)
 server = app.server
+trained_model = pickle.load(open('machine_learning_classification/trained_models/RF_88_best.sav', 'rb'))
+
+
+def get_memory_usage():
+    process = psutil.Process()
+    memory_usage = process.memory_info().rss  # Get the resident set size (RSS) memory usage
+    return memory_usage
 
 def get_average_features(sequence, df=0, protID=0):
     '''
@@ -45,7 +43,7 @@ def get_average_features(sequence, df=0, protID=0):
     ## get NET cumulative sums
     #print("calculating for", sequence)
     length = min(len(sequence), 900)
-    
+
     for ind,aa in enumerate(sequence):
         if ind == length: 
             break
@@ -75,8 +73,6 @@ def parse_contents(contents, filename):
     try:
         content_type, content_string = contents.split(',')
         decoded = base64.b64decode(content_string)
-        
-        trained_model = pickle.load(open('machine_learning_classification/trained_models/RF_88_best.sav', 'rb'))
         seqs_to_predict = SeqIO.parse(io.StringIO(decoded.decode('utf-8')),'fasta')
         prediction_map = {'0': "predicted non-effector", '1': "predicted effector"}
         
@@ -85,9 +81,7 @@ def parse_contents(contents, filename):
         for protein in seqs_to_predict:
             seq_ids.append(protein.id)
             full_sequences.append(protein.seq)
-
         seq_features = np.array([get_average_features(seq) for seq in full_sequences])
-        
         # get predicted output
         predictions = trained_model.predict(seq_features)
         probabilities = trained_model.predict_proba(seq_features)
@@ -103,6 +97,7 @@ def parse_contents(contents, filename):
         df['probability'] = np.round(df['probability'], 3)
 
     except Exception as e:
+        print(e)
         df = pd.DataFrame({"proteinID": [],
                    "prediction": [], 
                    "probability": [], 
@@ -115,6 +110,7 @@ def parse_contents(contents, filename):
                Input('upload-data', 'filename')])
 def get_new_datatable(contents, filename):
     table = parse_contents(contents, filename)
+
     table['Protein ID'] = table['proteinID']
     table['Probability'] = table['probability']
     table['Classification'] = table['prediction']
@@ -151,7 +147,9 @@ def get_new_datatable(contents, filename):
                        },
         )
     
+    
     return html.Div([formatted_table])
+    return parse_contents(contents, filename).to_html()
 
 # Buttons
 button_howto = dbc.Button(
@@ -277,6 +275,13 @@ card = dbc.Card(
     ], style={'height': '30vh'}
 )
 
+@app.callback(
+    dash.dependencies.Output('memory-usage', 'children'),
+    [dash.dependencies.Input('interval-component', 'n_intervals')]
+)
+def update_memory_usage(n):
+    memory_usage = get_memory_usage()
+    return f"Memory Usage: {memory_usage / 1024 / 1024:.2f} MB"
 
 @app.callback(
     Output("card-content", "children"), [Input("card-tabs", "active_tab")]
@@ -299,27 +304,20 @@ def tab_content(active_tab):
                 dcc.Markdown('''3. View the sortable and filterable results in the datatable below.'''),
             ])
         )
-    elif active_tab == "usage-tab":
-        return(
-            html.Div([
-                dcc.Markdown('''If you use EffectorO in your research, please cite us:'''),
-                dcc.Markdown('''
-                    > 
-                    > Nur, M. J., Wood, K. J. & Michelmore, R. W. EffectorO: motif-independent prediction of effectors in oomycete genomes using machine learning and lineage-specificity. Mol. Plant-Microbe Interact. (2023). doi:10.1094/MPMI-11-22-0236-TA
-                    > 
-                '''),
-                dcc.Markdown(
-                    '''Also — if you are using EffectorO to predict oomycete effectors we would love to hear from you!'''
-                    ''' Please email Kelsey at [klsywd@gmail.com](mailto:klsywd@gmail.com)'''
-                    ''' or on Twitter [@klsywd](https://twitter.com/klsywd) and let us know what organism you are studying.'''
-                ),
-            ])
-        )
 
 
 app.layout = html.Div(
     [
         header,
+        dcc.Markdown('''If you use EffectorO in your research, please cite us:'''),
+        html.Blockquote('Nur, M. J., Wood, K. J. & Michelmore, R. W. EffectorO: motif-independent prediction of effectors in oomycete genomes using machine learning and lineage-specificity. Mol. Plant-Microbe Interact. (2023). doi:10.1094/MPMI-11-22-0236-TA'),
+        dcc.Markdown('''Also — if you are using EffectorO to predict oomycete effectors we would love to hear from you! Please email Kelsey at [klsywd@gmail.com](mailto:klsywd@gmail.com) or on Twitter [@klsywd](https://twitter.com/klsywd) and let us know what organism you are studying.
+        '''),
+        dcc.Interval(
+            id='interval-component',
+            interval=2000,  # Refresh the memory usage every 2 seconds
+            n_intervals=0
+        ),
         dbc.Container(
             [dbc.Row([dbc.Col(image_card, md=6), 
                       dbc.Col(card, md=6)
@@ -327,6 +325,7 @@ app.layout = html.Div(
             dbc.Row([dbc.Col(table_card)])],
             fluid=True,
         ),
+        html.Div(id="memory-usage"),
     ]
 )
 
