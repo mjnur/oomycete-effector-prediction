@@ -263,8 +263,6 @@ card = dbc.Card(
                             label_style=tab_label_style),
                     dbc.Tab(label="Methodology", tab_id="method-tab", 
                             label_style=tab_label_style),
-                    dbc.Tab(label="Usage", tab_id="usage-tab", 
-                            label_style=tab_label_style),
                 ],
                 id="card-tabs",
                 card=True,
