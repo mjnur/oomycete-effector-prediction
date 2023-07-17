@@ -1,7 +1,6 @@
 import numpy as np
-from sklearn.ensemble import RandomForestClassifier
 import FEAT as FEAT
-import sys, os, warnings
+import sys, warnings
 import pandas as pd
 import numpy as np
 import pickle
